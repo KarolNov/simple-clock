@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zegarson for Pyrson</title>
+    <style>
+      @font-face {
+        font-family: "Bahnschrift";
+        src: url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.eot");
+        src: url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.eot?#iefix")
+            format("embedded-opentype"),
+          url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.woff2")
+            format("woff2"),
+          url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.woff")
+            format("woff"),
+          url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.ttf")
+            format("truetype"),
+          url("//db.onlinewebfonts.com/t/0a6ee448d1bd65c56f6cf256a7c6f20a.svg#Bahnschrift")
+            format("svg");
+      }
+      body {
+          margin: 0;
+      }
+      .img {
+        background: url("./background.png") center no-repeat;
+        width: 1276px;
+        height: 714px;
+      }
+      .clockContainer {
+          position: absolute;
+          top: 440px;
+          left: 330px;
+      }
+      .clock {
+        font-family: Bahnschrift;
+        font-size: 60px;
+        color: white;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="img">
+      <div class="clockContainer">
+        <h1 class="clock" id="clock"></h1>
+      </div>
+    </main>
+
+    <div>
+        <button id="start">start</button>
+        <button id="reset">reset</button>
+      </div>
+    <script>
+      const clock = document.getElementById("clock"),
+        startStopButton = document.getElementById("start"),
+        resetButton = document.getElementById("reset");
+      let interval;
+
+      let clockTime = {};
+      const changeClock = (start) => {
+        let { minutes = 25, seconds = 0 } = clockTime;
+        if (!start) {
+          if (seconds === 0) {
+            minutes -= 1;
+            seconds = 59;
+          } else seconds -= 1;
+          if (minutes === 0 && seconds === 0) clearInterval(interval);
+          clockTime = {
+            minutes: minutes,
+            seconds: seconds,
+          };
+        }
+        clock.innerText = `${
+          minutes === 0 ? "" : `${minutes > 9 ? minutes : "0" + minutes}m `
+        }${seconds > 9 ? seconds : `0${seconds}`}s`;
+      };
+
+      const startInterval = () => {
+        if (!interval) {
+          interval = setInterval(changeClock, 1000);
+          startStopButton.innerText = "stop";
+        } else {
+          clearInterval(interval);
+          interval = false;
+          startStopButton.innerText = "start";
+        }
+      };
+      const reset = () => {
+        clockTime = {};
+        changeClock(true);
+      };
+
+      changeClock(true);
+      startStopButton.addEventListener("click", startInterval);
+      resetButton.addEventListener("click", reset);
+    </script>
+  </body>
+</html>
